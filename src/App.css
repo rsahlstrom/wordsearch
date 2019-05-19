@@ -1,33 +1,61 @@
-.App {
+.wordSearch {
   text-align: center;
+  font-size: 24px;
+  font-family: Dustismo;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-  pointer-events: none;
+.wordSearch__cell {
+  padding: 8px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.wordMatch0 {
+  background-color: #ef4e4e;
 }
 
-.App-link {
-  color: #61dafb;
+.wordMatch1 {
+  background-color: #f9703e;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.wordMatch2 {
+  background-color: #f7c948;
+}
+
+.wordMatch3 {
+  background-color: #8ded2d;
+}
+
+.wordMatch4 {
+  background-color: #31b237;
+}
+
+.wordMatch5 {
+  background-color: #2dcca7;
+}
+
+.wordMatch6 {
+  background-color: #3ae7e1;
+}
+
+.wordMatch7 {
+  background-color: #40c3f7;
+}
+
+.wordMatch8 {
+  background-color: #2186eb;
+}
+
+.wordMatch9 {
+  background-color: #3a66db;
+}
+
+.wordMatch10 {
+  background-color: #9446ed;
+}
+
+.wordMatch11 {
+  background-color: #ed47ed;
+}
+
+.wordMatch12 {
+  background-color: #e8368f;
 }
