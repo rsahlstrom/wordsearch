@@ -11,6 +11,18 @@ function Puzzle({ rows, cols, words, directions, highlightWords }) {
       direction => directions.indexOf(direction) === -1
     );
 
+    if (cols < 1) {
+      cols = 1;
+    } else if (cols > 50) {
+      cols = 50;
+    }
+
+    if (rows < 1) {
+      rows = 1;
+    } else if (rows > 50) {
+      rows = 50;
+    }
+
     const options = {
       cols: cols,
       rows: rows,
@@ -31,33 +43,43 @@ function Puzzle({ rows, cols, words, directions, highlightWords }) {
   let wordMatchClasses = 12;
 
   return (
-    <table className="wordSearch" id="puzzle">
-      <tbody>
-        {puzzle.grid.map((row, rowIndex) => {
-          return (
-            <tr key={`row${rowIndex}`}>
-              {row.map((letter, colIndex) => {
-                let classNames = ['wordSearch__cell'];
-                if (highlightWords) {
-                  let wordIndex = cellInWord(rowIndex, colIndex, puzzleWords);
-                  if (wordIndex !== false) {
-                    classNames.push(`wordMatch${wordIndex % wordMatchClasses}`);
+    <>
+      {puzzleWords.length !== words.length ? (
+        <div className="status status--warning">
+          ⚠ Only {puzzleWords.length} out of the {words.length} words could fit
+          in the puzzle!
+        </div>
+      ) : null}
+      <table className="wordSearch" id="puzzle">
+        <tbody>
+          {puzzle.grid.map((row, rowIndex) => {
+            return (
+              <tr key={`row${rowIndex}`}>
+                {row.map((letter, colIndex) => {
+                  let classNames = ['wordSearch__cell'];
+                  if (highlightWords) {
+                    let wordIndex = cellInWord(rowIndex, colIndex, puzzleWords);
+                    if (wordIndex !== false) {
+                      classNames.push(
+                        `wordMatch${wordIndex % wordMatchClasses}`
+                      );
+                    }
                   }
-                }
-                return (
-                  <td
-                    className={classNames.join(' ')}
-                    key={`col${rowIndex}.${colIndex}`}
-                  >
-                    {letter}
-                  </td>
-                );
-              })}
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
+                  return (
+                    <td
+                      className={classNames.join(' ')}
+                      key={`col${rowIndex}.${colIndex}`}
+                    >
+                      {letter}
+                    </td>
+                  );
+                })}
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </>
   );
 }
 

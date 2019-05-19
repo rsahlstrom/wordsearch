@@ -33,6 +33,7 @@ function reducer(state, action) {
       words: action.value,
       wordsArray: action.value
         .split(/,|;|\r?\n/)
+        .map(word => word.replace(/\W+/g, ''))
         .filter(word => word.length > 0),
     };
   }
@@ -51,16 +52,20 @@ function App() {
             <input
               type="number"
               value={state.rows}
+              style={{ width: '40px' }}
               onChange={e => {
                 dispatch({ type: 'setRows', value: e.target.value });
               }}
             />
-          </label>{' '}
+          </label>
+        </p>
+        <p>
           <label>
             Columns:{' '}
             <input
               type="number"
               value={state.cols}
+              style={{ width: '40px' }}
               onChange={e => {
                 dispatch({ type: 'setCols', value: e.target.value });
               }}
@@ -103,6 +108,20 @@ function App() {
         </p>
         <p>
           <label>
+            Words (Seperate with comma, semicolon, or a new line)
+            <br />
+            <textarea
+              rows="10"
+              cols="30"
+              onChange={e => {
+                dispatch({ type: 'setWords', value: e.target.value });
+              }}
+              value={state.words}
+            />
+          </label>
+        </p>
+        <p>
+          <label>
             <input
               type="checkbox"
               checked={state.showSolution}
@@ -113,22 +132,9 @@ function App() {
                 })
               }
             />{' '}
-            Show Solution
+            Show solution
           </label>
         </p>
-        <label>
-          Words (Seperate with comma, semicolon, or a new line)
-          <br />
-          <textarea
-            rows="10"
-            cols="50"
-            onChange={e => {
-              dispatch({ type: 'setWords', value: e.target.value });
-            }}
-            value={state.words}
-          />
-        </label>
-        <p />
       </form>
       <Puzzle
         rows={state.rows}
