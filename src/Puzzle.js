@@ -1,8 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import WordSearch from '@blex41/word-search';
+import { generateBoggle } from './generators/boggle';
 import './App.css';
 
-function Puzzle({ rows, cols, words, directions, highlightWords }) {
+const clampDimension = value => {
+  const parsed = parseInt(value, 10);
+  if (Number.isNaN(parsed)) {
+    return 1;
+  }
+  if (parsed < 1) {
+    return 1;
+  }
+  if (parsed > 50) {
+    return 50;
+  }
+  return parsed;
+};
+
+function Puzzle({
+  rows,
+  cols,
+  words,
+  directions,
+  highlightWords,
+  placementMode,
+}) {
   const [puzzle, setPuzzle] = useState(null);
 
   useEffect(() => {
@@ -11,21 +33,24 @@ function Puzzle({ rows, cols, words, directions, highlightWords }) {
       direction => directions.indexOf(direction) === -1
     );
 
-    if (cols < 1) {
-      cols = 1;
-    } else if (cols > 50) {
-      cols = 50;
-    }
+    const normalizedCols = clampDimension(cols);
+    const normalizedRows = clampDimension(rows);
 
-    if (rows < 1) {
-      rows = 1;
-    } else if (rows > 50) {
-      rows = 50;
+    if (placementMode === 'boggle') {
+      setPuzzle(
+        generateBoggle({
+          cols: normalizedCols,
+          rows: normalizedRows,
+          dictionary: words,
+          allowedDirections: directions,
+        })
+      );
+      return;
     }
 
     const options = {
-      cols: cols,
-      rows: rows,
+      cols: normalizedCols,
+      rows: normalizedRows,
       dictionary: words,
       disabledDirections: disabledDirections,
       maxWords: words.length,
@@ -33,7 +58,7 @@ function Puzzle({ rows, cols, words, directions, highlightWords }) {
 
     // Create a new puzzle
     setPuzzle(new WordSearch(options));
-  }, [cols, rows, words, directions]);
+  }, [cols, rows, words, directions, placementMode]);
 
   if (puzzle === null) {
     return null;
@@ -89,6 +114,7 @@ Puzzle.defaultProps = {
   words: [],
   directions: ['N', 'E', 'W', 'S', 'NE', 'NW', 'SE', 'SW'],
   highlightWords: false,
+  placementMode: 'classic',
 };
 
 function cellInWord(rowIndex, colIndex, words) {

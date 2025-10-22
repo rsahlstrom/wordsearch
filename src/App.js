@@ -9,13 +9,14 @@ const initialState = {
   wordsArray: [],
   directions: ['N', 'E', 'W', 'S', 'NE', 'NW', 'SE', 'SW'],
   showSolution: true,
+  placementMode: 'classic',
 };
 
 function reducer(state, action) {
   if (action.type === 'setRows') {
-    return { ...state, rows: action.value };
+    return { ...state, rows: parseInt(action.value, 10) || 0 };
   } else if (action.type === 'setCols') {
-    return { ...state, cols: action.value };
+    return { ...state, cols: parseInt(action.value, 10) || 0 };
   } else if (action.type === 'setShowSolution') {
     return { ...state, showSolution: action.value };
   } else if (action.type === 'toggleDirection') {
@@ -36,6 +37,23 @@ function reducer(state, action) {
         .map(word => word.replace(/\W+/g, ''))
         .filter(word => word.length > 0),
     };
+  } else if (action.type === 'setPlacementMode') {
+    const nextMode = action.value;
+    let nextDirections = state.directions;
+
+    if (nextMode === 'boggle') {
+      const cardinal = ['N', 'E', 'S', 'W'];
+      nextDirections = state.directions.filter(direction =>
+        cardinal.includes(direction)
+      );
+      if (nextDirections.length === 0) {
+        nextDirections = cardinal;
+      }
+    } else if (nextMode === 'classic') {
+      nextDirections = ['N', 'E', 'W', 'S', 'NE', 'NW', 'SE', 'SW'];
+    }
+
+    return { ...state, placementMode: nextMode, directions: nextDirections };
   }
   return state;
 }
@@ -108,6 +126,23 @@ function App() {
         </p>
         <p>
           <label>
+            Placement mode:{' '}
+            <select
+              value={state.placementMode}
+              onChange={e =>
+                dispatch({
+                  type: 'setPlacementMode',
+                  value: e.target.value,
+                })
+              }
+            >
+              <option value="classic">Classic (straight lines)</option>
+              <option value="boggle">Boggle-style (snaking)</option>
+            </select>
+          </label>
+        </p>
+        <p>
+          <label>
             Words (Seperate with comma, semicolon, or a new line)
             <br />
             <textarea
@@ -142,6 +177,7 @@ function App() {
         words={state.wordsArray}
         directions={state.directions}
         highlightWords={state.showSolution}
+        placementMode={state.placementMode}
       />
     </div>
   );
